@@ -7,7 +7,3 @@ def hash_password(password:str)-> str:
 
 def verify_password(password:str,hashed_password:str )-> bool:
     return pwd_context.verify(password,hashed_password)
-
-hashed = hash_password("mysecret123")
-print(verify_password("mysecret123", hashed))  # True
-print(verify_password("wrongpass", hashed))    # False
