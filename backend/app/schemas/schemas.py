@@ -22,7 +22,7 @@ class UserResponse(BaseModel):
     class Config:
         orm_mode = True
 
-def UpdateUser(BaseModel):
+def UserUpdate(BaseModel):
     email: Optional[EmailStr]
     password: Optional[str]
     first_name: Optional[str]
