@@ -56,9 +56,7 @@ class Application(Base):
     job_id = Column(Integer, ForeignKey("jobs.id", ondelete="CASCADE"), nullable=False)
     cover_letter = Column(Text)
     status = Column(String(50), default="pending")
-    applied_at = Column(Date)
     created_at = Column(DateTime, default=None)
-    updated_at = Column(DateTime, default=None)
     
     user = relationship("User", back_populates="applications")
     job = relationship("Job", back_populates="applications")
