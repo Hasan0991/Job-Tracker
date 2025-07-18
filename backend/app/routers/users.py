@@ -21,5 +21,5 @@ def get_user(user_id:int ,db:Session=Depends(get_db)):
     return user
 
 @router.put("/{user_id}",response_model=schemas.UserResponse)
-def update_user(user_id:int,user: schemas.UserUpdate,db:Session=Depends(get_db),):
-    return crud.update_user(user_id=user_id,db=db,user=user)
+def update_user(user_id:int,user: schemas.UserUpdate,db:Session=Depends(get_db)):
+    return crud.update_user(user_id,db,user_update=user)
