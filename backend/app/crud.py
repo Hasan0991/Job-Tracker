@@ -24,3 +24,14 @@ def create_user(db: Session,user:schemas.UserCreate):
 
 def get_user_by_id(user_id: int,db:Session):
     return db.query(models.User).filter(models.User.id==user_id).first()
+
+def update_user(user_id: int , db:Session,user_update:schemas.UserUpdate):
+    db_user = db.query(models.User).filter(models.User.id ==user_id).first()
+    if db_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="User not found")
+    for key,value in user_update.dict(exclude_unset=True).items():
+        setattr(db_user,key,value)
+
+    db.commit()
+    db.refresh(db_user)
+    return db_user
