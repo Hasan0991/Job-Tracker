@@ -35,3 +35,11 @@ def update_user(user_id: int , db:Session,user_update:schemas.UserUpdate):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def delete_user(user_id: int ,db:Session):
+    db_user = db.query(models.User).filter(models.User.id==user_id).first()
+    if not db_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="User not found")
+    db.delete(db_user)
+    db.commit()
+    return db_user
