@@ -21,3 +21,6 @@ def create_user(db: Session,user:schemas.UserCreate):
     db.commit()
     db.refresh(new_user)
     return new_user
+
+def get_user_by_id(user_id: int,db:Session):
+    return db.query(models.User).filter(models.User.id==user_id).first()
