@@ -12,3 +12,10 @@ router = APIRouter(
 @router.post("/", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return crud.create_user(db=db, user=user)
+
+@router.get("/{user_id}",response_model=schemas.UserResponse)
+def get_user(user_id:int ,db:Session=Depends(get_db)):
+    user = crud.get_user_by_id(user_id,db)
+    if not user:
+        raise HTTPException(status_code=404,detail="User not found")
+    return user
