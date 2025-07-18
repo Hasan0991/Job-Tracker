@@ -23,3 +23,7 @@ def get_user(user_id:int ,db:Session=Depends(get_db)):
 @router.put("/{user_id}",response_model=schemas.UserResponse)
 def update_user(user_id:int,user: schemas.UserUpdate,db:Session=Depends(get_db)):
     return crud.update_user(user_id,db,user_update=user)
+
+@router.delete("/{user_id}",status_code=status.HTTP_200_OK)
+def delete_user(user_id: int,db:Session=Depends(get_db)):
+    return crud.delete_user(user_id=user_id,db=db)
