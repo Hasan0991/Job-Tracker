@@ -25,6 +25,10 @@ def create_user(db: Session,user:schemas.UserCreate):
 def get_user_by_id(user_id: int,db:Session):
     return db.query(models.User).filter(models.User.id==user_id).first()
 
+
+def get_all_users(db:Session):
+    return db.query(models.User).all()
+
 def update_user(user_id: int , db:Session,user_update:schemas.UserUpdate):
     db_user = db.query(models.User).filter(models.User.id ==user_id).first()
     if not db_user:
@@ -64,3 +68,4 @@ def get_jobs(db:Session,job_id :int):
 
 def get_all_jobs(db:Session):
     return db.query(models.Job).all()
+
