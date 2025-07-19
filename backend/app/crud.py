@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from app import models,utils
 from app.schemas import schemas
 from fastapi import HTTPException,status
-
+from datetime import datetime
 def create_user(db: Session,user:schemas.UserCreate):
     db_user = db.query(models.User).filter(models.User.email==user.email).first()
     if db_user:
@@ -43,3 +43,17 @@ def delete_user(user_id: int ,db:Session):
     db.delete(db_user)
     db.commit()
     return {"details":"user deleted"}
+
+def create_job(db:Session,job:schemas.JobCreate):
+    new_job=models.Job(
+        user_id=job.user_id,
+        company_id=job.company_id,
+        title=job.title,
+        url=job.url,
+        status=job.status,
+        created_at =datetime.utcnow() 
+    )
+    db.add(new_job)
+    db.commit()
+    db.refresh(new_job)
+    return new_job
