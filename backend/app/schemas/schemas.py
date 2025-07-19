@@ -36,4 +36,17 @@ class JobCreate(BaseModel):
     status:Optional[str]="sent"
     notes:Optional[str]=None
 
+class JobResponse(BaseModel):
+    id: int
+    user_id :int
+    company_id: Optional[int]
+    title:  str
+    url : str
+    status:Optional[str]
+    notes:Optional[str]
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
+    class Config:
+        from_attributes = True
+
 
