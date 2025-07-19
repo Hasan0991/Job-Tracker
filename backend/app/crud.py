@@ -51,7 +51,8 @@ def create_job(db:Session,job:schemas.JobCreate):
         title=job.title,
         url=job.url,
         status=job.status,
-        created_at =datetime.utcnow() 
+        created_at =datetime.utcnow() ,
+        notes=job.notes
     )
     db.add(new_job)
     db.commit()
