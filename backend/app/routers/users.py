@@ -19,7 +19,7 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 @router.get("/",response_model=list[schemas.UserResponse],status_code=status.HTTP_200_OK)
 def get_all_users(db:Session=Depends(get_db)):
-    return db.query(models.User).all()
+    return crud.get_all_users(db=db)
 
 
 @router.get("/{user_id}",response_model=schemas.UserResponse)
@@ -34,7 +34,6 @@ def get_user(user_id:int ,db:Session=Depends(get_db)):
 @router.put("/{user_id}",response_model=schemas.UserResponse)
 def update_user(user_id:int,user: schemas.UserUpdate,db:Session=Depends(get_db)):
     return crud.update_user(user_id,db,user_update=user)
-
 
 @router.delete("/{user_id}",status_code=status.HTTP_200_OK)
 def delete_user(user_id: int,db:Session=Depends(get_db)):
