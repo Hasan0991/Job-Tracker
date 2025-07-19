@@ -27,3 +27,13 @@ class UserUpdate(BaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     birth_date: Optional[date] = None
+
+class JobCreate(BaseModel):
+    user_id :int
+    company_id: Optional[int]=None
+    title: str
+    url :str
+    status:Optional[str]="sent"
+    notes:Optional[str]=None
+
+
