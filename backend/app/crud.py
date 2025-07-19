@@ -58,3 +58,6 @@ def create_job(db:Session,job:schemas.JobCreate):
     db.commit()
     db.refresh(new_job)
     return new_job
+
+def get_jobs(db:Session,job_id :int):
+    return db.query(models.Job).filter(models.Job.id==job_id).first()
