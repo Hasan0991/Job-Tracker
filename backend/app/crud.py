@@ -61,3 +61,6 @@ def create_job(db:Session,job:schemas.JobCreate):
 
 def get_jobs(db:Session,job_id :int):
     return db.query(models.Job).filter(models.Job.id==job_id).first()
+
+def get_all_jobs(db:Session):
+    return db.query(models.Job).all()
