@@ -69,3 +69,13 @@ def get_jobs(db:Session,job_id :int):
 def get_all_jobs(db:Session):
     return db.query(models.Job).all()
 
+def update_job_by_id(db:Session,job_id:int,updated_job:schemas.JobUpdate):
+    db_job = db.query(models.Job).filter(models.Job.id==job_id).first()
+    if not db_job:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Job not found")
+    for key,value in updated_job.dict(exclude_unset=True).items():
+        setattr(db_job,key,value)
+    
+    db.commit()
+    db.refresh(db_job)
+    return db_job
