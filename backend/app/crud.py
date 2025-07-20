@@ -26,8 +26,8 @@ def get_user_by_id(user_id: int,db:Session):
     return db.query(models.User).filter(models.User.id==user_id).first()
 
 
-def get_all_users(db:Session):
-    return db.query(models.User).all()
+def get_all_users(db:Session,skip,limit):
+    return db.query(models.User).offset(skip).limit(limit).all()
 
 def update_user(user_id: int , db:Session,user_update:schemas.UserUpdate):
     db_user = db.query(models.User).filter(models.User.id ==user_id).first()
