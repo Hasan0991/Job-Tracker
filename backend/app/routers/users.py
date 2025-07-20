@@ -23,7 +23,7 @@ def get_all_users(
     limit: int = Query(10, le=100),
     db:Session=Depends(get_db)
     ):
-    return crud.get_all_users(db=db)
+    return crud.get_all_users(db=db,skip=skip,limit=limit)
 
 
 @router.get("/{user_id}",response_model=schemas.UserResponse)
