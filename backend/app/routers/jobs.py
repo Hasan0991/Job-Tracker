@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Depends,status,HTTPException
+from fastapi import APIRouter,Depends,status,HTTPException,Query
 from sqlalchemy.orm import Session
 from app import crud,models
 from app.database import get_db
@@ -23,8 +23,12 @@ def get_job_by_id(job_id:int ,db:Session=Depends(get_db)):
     return job
 
 @router.get("/",response_model=list[schemas.JobResponse],status_code=status.HTTP_201_CREATED)
-def get_all_jobs(db:Session=Depends(get_db)):
-    return crud.get_all_jobs(db)
+def get_all_jobs(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, le=100),
+    db:Session=Depends(get_db)
+    ):
+    return crud.get_jobs_paginated(db,skip=skip,limit=limit)
 
 @router.put("/{job_id}",response_model=schemas.JobResponse)
 def update_job(job_id :int,job:schemas.JobUpdate,db:Session=Depends(get_db)):
