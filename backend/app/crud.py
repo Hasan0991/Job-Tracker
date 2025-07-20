@@ -66,8 +66,8 @@ def create_job(db:Session,job:schemas.JobCreate):
 def get_jobs(db:Session,job_id :int):
     return db.query(models.Job).filter(models.Job.id==job_id).first()
 
-def get_all_jobs(db:Session):
-    return db.query(models.Job).all()
+def get_jobs_paginated(db:Session,skip: int = 0, limit: int = 10):
+    return db.query(models.Job).offset(skip).limit(limit).all()
 
 def update_job_by_id(db:Session,job_id:int,updated_job:schemas.JobUpdate):
     db_job = db.query(models.Job).filter(models.Job.id==job_id).first()
