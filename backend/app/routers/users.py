@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Depends,status,HTTPException
+from fastapi import APIRouter,Depends,status,HTTPException,Query
 from sqlalchemy.orm import Session
 from app import models,utils,crud
 from app.schemas import schemas
@@ -18,7 +18,11 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/",response_model=list[schemas.UserResponse],status_code=status.HTTP_200_OK)
-def get_all_users(db:Session=Depends(get_db)):
+def get_all_users(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, le=100),
+    db:Session=Depends(get_db)
+    ):
     return crud.get_all_users(db=db)
 
 
