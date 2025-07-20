@@ -30,7 +30,7 @@ class Job(Base):
     applied_at = Column(Date)
     notes = Column(Text)
     created_at = Column(DateTime, default=None)
-    updated_at = Column(DateTime, default=None)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     user = relationship("User", back_populates="jobs")
     company = relationship("Company", back_populates="jobs")
