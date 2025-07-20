@@ -49,4 +49,11 @@ class JobResponse(BaseModel):
     class Config:
         from_attributes = True
 
+class JobUpdate(BaseModel):
+    users_id :Optional[int]=None
+    company_id: Optional[int]=None
+    title:Optional[str]=None
+    url:Optional[str]=None
+    status:Optional[str]=None
+    notes:Optional[str]=None
 
