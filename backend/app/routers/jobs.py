@@ -32,3 +32,7 @@ def update_job(job_id :int,job:schemas.JobUpdate,db:Session=Depends(get_db)):
     if not updated_job:
         raise HTTPException(status_code=404,detail="Job not found")
     return updated_job
+
+@router.delete("/{job_id}",response_model=status.HTTP_200_OK)
+def delete_job(job_id:int,db:Session=Depends(get_db)):
+    return crud.delete_job(job_id=job_id,db=db)
