@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from backend.app.dependencies.auth import get_current_user  
+from app.dependencies.auth import get_current_user  
 from app  import models
 
 router = APIRouter(prefix="/protected", tags=["Protected"])
