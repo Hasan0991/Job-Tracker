@@ -10,7 +10,7 @@ def get_current_user(token: str=Depends(oauth2_scheme),db:Session=Depends(get_db
     credentials_exception=HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid authentication credentials",
-        headers={"WWW=Authenticate":"Bearer"}
+        headers={"WWW-Authenticate":"Bearer"}
     )
     payload= decode_access_token(token)
     if payload is None or "user_id" not in payload:
