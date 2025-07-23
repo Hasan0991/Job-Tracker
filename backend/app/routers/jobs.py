@@ -2,6 +2,7 @@ from fastapi import APIRouter,Depends,status,HTTPException,Query
 from sqlalchemy.orm import Session
 from app import crud,models
 from app.database import get_db
+from app.dependencies.auth import get_current_user
 from app.schemas import schemas
 from app.models import User
 router=APIRouter(
@@ -9,11 +10,11 @@ router=APIRouter(
     tags=["Jobs"]
 )
 @router.post("/",response_model=schemas.JobResponse,status_code=status.HTTP_201_CREATED)
-def create_job(job:schemas.JobCreate,db:Session=Depends(get_db)):
-    db_job= db.query(User).filter(User.id==job.user_id).first()
+def create_job(job:schemas.JobCreate,current_user: User = Depends(get_current_user),db:Session=Depends(get_db)):
+    db_job= db.query(User).filter(User.id==current_user.id).first()
     if not db_job:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="No such user")
-    return crud.create_job(db=db,job=job)
+    return crud.create_job(db=db,job=job,current_user_id = current_user.id)
 
 @router.get("/{job_id}",response_model=schemas.JobResponse)
 def get_job_by_id(job_id:int ,db:Session=Depends(get_db)):
