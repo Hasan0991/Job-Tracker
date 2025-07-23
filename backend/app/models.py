@@ -42,6 +42,7 @@ class Company(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
     website = Column(String(255))
+    description=Column(String(255))
     created_at = Column(DateTime, default=None)
     
     jobs = relationship("Job", back_populates="company")
