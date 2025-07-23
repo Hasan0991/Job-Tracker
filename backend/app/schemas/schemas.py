@@ -29,7 +29,6 @@ class UserUpdate(BaseModel):
     birth_date: Optional[date] = None
 
 class JobCreate(BaseModel):
-    user_id :int
     company_id: Optional[int]=None
     title: str
     url :str
