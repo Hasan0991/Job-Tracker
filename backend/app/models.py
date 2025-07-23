@@ -43,7 +43,6 @@ class Company(Base):
     name = Column(String(255), nullable=False)
     website = Column(String(255))
     created_at = Column(DateTime, default=None)
-    updated_at = Column(DateTime, default=None)
     
     jobs = relationship("Job", back_populates="company")
 
