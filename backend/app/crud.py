@@ -106,3 +106,9 @@ def create_company(db:Session,company:schemas.CompanyCreate):
     
 def get_all_companies(db:Session,skip,limit):
     return db.query(models.Company).offset(skip).limit(limit).all()
+
+def get_company_by_id(db:Session,company_id:int):
+    db_company = db.query(models.Company).filter(models.Company.id==company_id).first()
+    if not db_company:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="No such a company")
+    return db_company
