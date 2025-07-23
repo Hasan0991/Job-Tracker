@@ -22,3 +22,8 @@ def get_all_companies(
 @router.get("/{company_id}",response_model=schemas.CompanyResponse)
 def get_company_by_id(company_id:int,db:Session=Depends(get_db)):
     return crud.get_company_by_id(db=db,company_id=company_id)
+
+
+@router.put("/{user_id}",response_model=schemas.CompanyResponse)
+def update_company(company_id:int,updated_company:schemas.CompanyUpdate,db:Session=Depends(get_db)):
+    return crud.update_company(company_id=company_id,updated_company=update_company,db=db)
