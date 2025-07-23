@@ -70,3 +70,7 @@ class CompanyResponse(BaseModel):
     created_at: Optional[datetime]
     class Config:
         from_attributes= True
+class CompanyUpdate(BaseModel):
+    name: Optional[str]=None
+    description: Optional[str]=None
+    website: Optional[str]=None
