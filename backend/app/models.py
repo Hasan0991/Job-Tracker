@@ -41,7 +41,6 @@ class Company(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
-    industry = Column(String(255))
     website = Column(String(255))
     created_at = Column(DateTime, default=None)
     updated_at = Column(DateTime, default=None)
