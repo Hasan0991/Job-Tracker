@@ -57,3 +57,16 @@ class JobUpdate(BaseModel):
     status:Optional[str]=None
     notes:Optional[str]=None
 
+class CompanyCreate(BaseModel):
+    name : str
+    description: Optional[str]
+    website: Optional[str]
+
+class CompanyResponse(BaseModel):
+    id: int
+    name : Optional[str]
+    description: Optional[str]
+    website: Optional[str]
+    created_at:Optional[datetime]
+    class Config:
+        from_attributes= True
