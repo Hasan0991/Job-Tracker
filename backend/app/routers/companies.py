@@ -26,4 +26,8 @@ def get_company_by_id(company_id:int,db:Session=Depends(get_db)):
 
 @router.put("/{user_id}",response_model=schemas.CompanyResponse)
 def update_company(company_id:int,updated_company:schemas.CompanyUpdate,db:Session=Depends(get_db)):
-    return crud.update_company(company_id=company_id,updated_company=update_company,db=db)
+    return crud.update_company(company_id=company_id,updated_company=updated_company,db=db)
+
+@router.delete("/{company_id}",response_model=status.HTTP_200_OK)
+def delete_company(company_id:int,db:Session=Depends(get_db)):
+    return crud.delete_company(company_id=company_id,db=db)
