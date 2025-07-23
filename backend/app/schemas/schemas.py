@@ -67,6 +67,7 @@ class CompanyResponse(BaseModel):
     name : Optional[str]
     description: Optional[str]
     website: Optional[str]
-    created_at:Optional[datetime]
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
     class Config:
         from_attributes= True
