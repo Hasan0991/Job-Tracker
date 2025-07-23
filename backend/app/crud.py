@@ -113,7 +113,7 @@ def get_company_by_id(db:Session,company_id:int):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="No such a company")
     return db_company
 
-def update_company(company_id: int,updated_company: schemas.UserUpdate,db:Session):
+def update_company(company_id: int,updated_company: schemas.CompanyUpdate,db:Session):
     db_company = db.query(models.Company).filter(models.Company.id==company_id).first()
     if not db_company:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="No such a company")
@@ -121,4 +121,12 @@ def update_company(company_id: int,updated_company: schemas.UserUpdate,db:Sessio
         setattr(db_company,key,value)
     db.commit()
     db.refresh(db_company)
-    return {"details":"Company Updated"}
+    return db_company
+
+def delete_company(company_id:int,db:Session):
+    db_company = db.query(models.Company).filter(models.Company.id==company_id).first()
+    if not db_company:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Company not found")
+    db.delete(db_company)
+    db.commit()
+    return {"details":"company deleted"}
