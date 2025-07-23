@@ -48,9 +48,9 @@ def delete_user(user_id: int ,db:Session):
     db.commit()
     return {"details":"user deleted"}
 
-def create_job(db:Session,job:schemas.JobCreate):
+def create_job(db:Session,job:schemas.JobCreate,current_user_id:int):
     new_job=models.Job(
-        user_id=job.user_id,
+        user_id=current_user_id,
         company_id=job.company_id,
         title=job.title,
         url=job.url,
