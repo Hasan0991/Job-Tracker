@@ -17,3 +17,8 @@ def get_all_companies(
     limit: int = Query(10, le=100)
     ):
     return crud.get_all_companies(db=db,skip=skip,limit=limit)
+
+
+@router.get("/{company_id}",response_model=list[schemas.CompanyResponse])
+def get_company_by_id(company_id:int,db:Session=Depends(get_db)):
+    return crud.get_company_by_id(db=db,company_id=company_id)
