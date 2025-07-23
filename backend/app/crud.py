@@ -90,17 +90,19 @@ def delete_job(job_id:int,db:Session):
 
 
 def create_company(db:Session,company:schemas.CompanyCreate):
-    db_company= db.query(models.Company).filter(models.Company.name==company.name)
+    db_company= db.query(models.Company).filter(models.Company.name==company.name).first()
     if db_company:
-        raise HTTPException(status_code=status.HTTP_400_FORBIDDEN,detail="Company already exists")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="Company already exists")
     new_company=models.Company(
         name=company.name,
         website=company.website,
         description=company.description,
-        created_at=datetime.utcnow()
+        created_at = datetime.utcnow()
     )
     db.add(new_company)
     db.commit()
     db.refresh(new_company)
-    return company
+    return new_company
     
+def get_all_companies(db:Session,skip,limit):
+    return db.query(models.Company).offset(skip).limit(limit).all()
