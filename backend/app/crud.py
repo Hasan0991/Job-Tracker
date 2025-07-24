@@ -69,10 +69,12 @@ def get_jobs(db:Session,job_id :int):
 def get_jobs_paginated(db:Session,skip: int = 0, limit: int = 10):
     return db.query(models.Job).offset(skip).limit(limit).all()
 
-def update_job_by_id(db:Session,job_id:int,updated_job:schemas.JobUpdate):
+def update_job_by_id(db:Session,job_id:int,updated_job:schemas.JobUpdate,current_user_id:int):
     db_job = db.query(models.Job).filter(models.Job.id==job_id).first()
     if not db_job:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Job not found")
+    if db_job.user_id!=current_user_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to update this job")
     for key,value in updated_job.dict(exclude_unset=True).items():
         setattr(db_job,key,value)
     
