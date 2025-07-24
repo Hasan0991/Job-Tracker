@@ -49,7 +49,6 @@ class JobResponse(BaseModel):
         from_attributes = True
 
 class JobUpdate(BaseModel):
-    users_id :Optional[int]=None
     company_id: Optional[int]=None
     title:Optional[str]=None
     url:Optional[str]=None
