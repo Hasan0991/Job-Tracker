@@ -39,5 +39,5 @@ def update_job(job_id :int,job:schemas.JobUpdate,current_user: User = Depends(ge
     return updated_job
 
 @router.delete("/{job_id}",status_code=status.HTTP_200_OK)
-def delete_job(job_id:int,db:Session=Depends(get_db)):
-    return crud.delete_job(job_id=job_id,db=db)
+def delete_job(job_id:int,db:Session=Depends(get_db),current_user:User=Depends(get_current_user)):
+    return crud.delete_job(job_id=job_id,db=db,current_user_id = current_user.id)
