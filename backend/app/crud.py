@@ -82,10 +82,12 @@ def update_job_by_id(db:Session,job_id:int,updated_job:schemas.JobUpdate,current
     db.refresh(db_job)
     return db_job
 
-def delete_job(job_id:int,db:Session):
+def delete_job(job_id:int,db:Session,current_user_id:int):
     db_job = db.query(models.Job).filter(models.Job.id==job_id).first()
     if not db_job:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Job not found")
+    if db_job.user_id!=current_user_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to delete this job")
     db.delete(db_job)    
     db.commit()
     return {"details":"Job deleted"}
