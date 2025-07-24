@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import users  ,jobs,auth,protected
+from app.routers import users  ,jobs,auth,protected,companies
 from app import models
 from app.database import engine
 
@@ -14,6 +14,7 @@ app.include_router(users.router)
 app.include_router(jobs.router)
 app.include_router(auth.router)
 app.include_router(protected.router)
+app.include_router(companies.router)
 
 @app.get("/")
 def root():
