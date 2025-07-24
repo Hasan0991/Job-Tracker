@@ -48,6 +48,4 @@ def update_user(user_id:int,user: schemas.UserUpdate,db:Session=Depends(get_db))
 
 @router.delete("/{user_id}",status_code=status.HTTP_200_OK)
 def delete_user(user_id: int,db:Session=Depends(get_db),current_user:User=Depends(get_current_user)):
-    if current_user.id!=user_id and current_user.role!="admin":
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="Not authorized to view this user")
-    return crud.delete_user(user_id=user_id,db=db)
+    return crud.delete_user(user_id=user_id,db=db,current_user=current_user)
