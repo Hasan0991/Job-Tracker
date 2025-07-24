@@ -40,10 +40,12 @@ def update_user(user_id: int , db:Session,user_update:schemas.UserUpdate):
     db.refresh(db_user)
     return db_user
 
-def delete_user(user_id: int ,db:Session):
+def delete_user(user_id: int ,db:Session,current_user:models.User):
     db_user = db.query(models.User).filter(models.User.id==user_id).first()
     if not db_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="User not found")
+    if current_user.id!=user_id and current_user.role!="admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="Not authorized to view this user")
     db.delete(db_user)
     db.commit()
     return {"details":"user deleted"}
