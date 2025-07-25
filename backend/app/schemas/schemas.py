@@ -1,11 +1,11 @@
 from pydantic import BaseModel,EmailStr
 from datetime import date, datetime
-from typing import Optional
+from typing import Optional,Literal
 
 class UserCreate(BaseModel):
     email:EmailStr
     password: str
-    role: str
+    role: Literal["user", "admin"] = "user"  
     first_name: Optional[str]=None
     last_name:  Optional[str]=None
     birth_date: Optional[date]=None
