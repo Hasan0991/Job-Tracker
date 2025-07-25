@@ -10,6 +10,13 @@ class UserCreate(BaseModel):
     last_name:  Optional[str]=None
     birth_date: Optional[date]=None
 
+class UserRegister(BaseModel):
+    email:EmailStr
+    password: str  
+    first_name: Optional[str]=None
+    last_name:  Optional[str]=None
+    birth_date: Optional[date]=None
+
 class UserResponse(BaseModel):
     id: int
     email: EmailStr
