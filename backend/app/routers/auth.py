@@ -21,5 +21,5 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
             status_code=status.HTTP_201_CREATED,
             response_model=schemas.UserResponse,
             description="Creates a new user with a hashed password and returns user data without password.")
-def register(user:schemas.UserCreate,db:Session=Depends(get_db)):
+def register(user:schemas.UserRegister,db:Session=Depends(get_db)):
     return crud.create_user(db=db,user=user)
