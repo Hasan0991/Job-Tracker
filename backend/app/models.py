@@ -19,7 +19,8 @@ class User(Base):
     passive_deletes=True)
     applications = relationship("Application", back_populates="user",cascade="all, delete",
         passive_deletes=True)
-
+    companies = relationship("Company", back_populates="user",cascade="all, delete",
+    passive_deletes=True)
 class Job(Base):
     __tablename__ = "jobs"
     
@@ -47,7 +48,8 @@ class Company(Base):
     website = Column(String(255))
     description=Column(String(255))
     created_at = Column(DateTime, default=None)
-    
+
+    user = relationship("User", back_populates="companies")
     jobs = relationship("Job", back_populates="company")
 
 class Application(Base):
