@@ -87,7 +87,7 @@ class ApplicationCreate(BaseModel):
 
 class ApplicationUpdate(BaseModel):
     cover_letter:Optional[str]=None
-    status=Optional[Literal["pending","accepted","rejected"]] = None
+    status: Optional[Literal["pending","accepted","rejected"]] = None
 
 class ApplicationResponse(BaseModel):
     id: int
