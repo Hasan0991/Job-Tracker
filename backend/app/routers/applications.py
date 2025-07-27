@@ -21,3 +21,6 @@ def get_all_applications(db:Session=Depends(get_db),
     limit: int = Query(10, le=100)):
     return crud.get_all_applications(db=db,skip=skip,limit=limit)
 
+@router.get("/me",response_model=list[schemas.ApplicationResponse])
+def get_application_by_user_id(current_user:models.User=Depends(get_current_user),db:Session=Depends(get_db)):
+    return crud.get_application_by_user_id(current_user=current_user,db=db)

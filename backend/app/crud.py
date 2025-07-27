@@ -163,3 +163,9 @@ def create_application(db:Session,current_user:models.User,application:schemas.A
 
 def get_all_applications(db:Session,skip,limit):
     return db.query(models.Application).offset(skip).limit(limit).all()
+
+def get_application_by_user_id(current_user:models.User,db:Session):
+    db_user_applications=db.query(models.Application).filter(models.Application.user_id==current_user.id).all()
+    if not db_user_applications:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="User does not have any job applications")
+    return db.query(models.Application).filter(models.Application.user_id==current_user.id).all()
