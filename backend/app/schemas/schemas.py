@@ -93,10 +93,10 @@ class ApplicationResponse(BaseModel):
     id: int
     user_id: int
     job_id: int
-    message: Optional[str]
+    cover_letter: Optional[str]
     status: str
     created_at: datetime
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes= True
