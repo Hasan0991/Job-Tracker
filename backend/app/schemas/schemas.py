@@ -80,3 +80,23 @@ class CompanyUpdate(BaseModel):
     name: Optional[str]=None
     description: Optional[str]=None
     website: Optional[str]=None
+
+class ApplicationCreate(BaseModel):
+    job_id :int
+    cover_letter:Optional[str]=None 
+
+class ApplicationUpdate(BaseModel):
+    cover_letter:Optional[str]=None
+    status=Optional[Literal["pending","accepted","rejected"]] = None
+
+class ApplicationResponse(BaseModel):
+    id: int
+    user_id: int
+    job_id: int
+    message: Optional[str]
+    status: str
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        orm_mode = True
