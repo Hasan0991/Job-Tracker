@@ -1,9 +1,10 @@
 from sqlalchemy.orm import Session
+from typing import Optional,Union
 from app import models,utils
 from app.schemas import schemas
 from fastapi import HTTPException,status
 from datetime import datetime
-def create_user(db: Session,user:schemas.UserCreate):
+def create_user(db: Session,user:Union[schemas.UserCreate,schemas.UserRegister],role:Optional[str]=None):
     db_user = db.query(models.User).filter(models.User.email==user.email).first()
     if db_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="Email already exists")
@@ -12,7 +13,7 @@ def create_user(db: Session,user:schemas.UserCreate):
     new_user= models.User(
         email=user.email,
         password=hashed_password,
-        role = user.role,
+        role = role if role else user.role,
         first_name = user.first_name,
         last_name = user.last_name,
         birth_date = user.birth_date,
@@ -96,7 +97,7 @@ def delete_job(job_id:int,db:Session,current_user_id:int):
     return {"details":"Job deleted"}
 
 
-def create_company(db:Session,company:schemas.CompanyCreate):
+def create_company(db:Session,company:schemas.CompanyCreate,current_user_id:int):
     db_company= db.query(models.Company).filter(models.Company.name==company.name).first()
     if db_company:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="Company already exists")
@@ -104,6 +105,7 @@ def create_company(db:Session,company:schemas.CompanyCreate):
         name=company.name,
         website=company.website,
         description=company.description,
+        user_id= current_user_id,
         created_at = datetime.utcnow()
     )
     db.add(new_company)
@@ -120,20 +122,24 @@ def get_company_by_id(db:Session,company_id:int):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="No such a company")
     return db_company
 
-def update_company(company_id: int,updated_company: schemas.CompanyUpdate,db:Session):
+def update_company(company_id: int,updated_company: schemas.CompanyUpdate,db:Session,current_user:models.User):
     db_company = db.query(models.Company).filter(models.Company.id==company_id).first()
     if not db_company:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="No such a company")
+    if db_company.user_id != current_user.id and current_user.role!="admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="Not authenticated to update this Company")
     for key,value in updated_company.dict(exclude_unset=True).items():
         setattr(db_company,key,value)
     db.commit()
     db.refresh(db_company)
     return db_company
 
-def delete_company(company_id:int,db:Session):
+def delete_company(company_id:int,db:Session,current_user:models.User):
     db_company = db.query(models.Company).filter(models.Company.id==company_id).first()
     if not db_company:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Company not found")
+    if db_company.user_id!=current_user.id and current_user.role!="admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="Not authenticated to delete this Company")
     db.delete(db_company)
     db.commit()
     return {"details":"company deleted"}
