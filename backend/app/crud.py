@@ -143,3 +143,20 @@ def delete_company(company_id:int,db:Session,current_user:models.User):
     db.delete(db_company)
     db.commit()
     return {"details":"company deleted"}
+
+def create_application(db:Session,current_user:models.User,application:schemas.ApplicationCreate):
+    db_application=db.query(models.Application).filter(models.Application.user_id==current_user.id,models.Application.job_id==application.job_id).first()
+    db_job = db.query(models.Job).filter(models.Job.id==application.job_id).first()
+    if not db_job:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Job not found")
+    if db_application:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="Already applied to this job")
+    new_application=models.Application(
+        user_id = current_user.id,
+        job_id = application.job_id,
+        cover_letter=application.cover_letter
+    )
+    db.add(new_application)
+    db.commit()
+    db.refresh(new_application)
+    return new_application
