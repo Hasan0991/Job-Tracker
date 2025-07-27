@@ -168,4 +168,24 @@ def get_application_by_user_id(current_user:models.User,db:Session):
     db_user_applications=db.query(models.Application).filter(models.Application.user_id==current_user.id).all()
     if not db_user_applications:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="User does not have any job applications")
-    return db.query(models.Application).filter(models.Application.user_id==current_user.id).all()
+    return db_user_applications
+
+def update_application(db:Session,application_id:int,application:schemas.ApplicationUpdate,current_user:models.User):
+    db_application = db.query(models.Application).filter(models.Application.id == application_id,models.Application.user_id == current_user.id).first()
+    if not db_application:
+       raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Application not found")
+    
+    for key,value in application.dict(exclude_unset=True).items():
+        setattr(db_application,key,value)
+    db_application.updated_at=datetime.utcnow()
+    db.commit()
+    db.refresh(db_application)
+    return db_application
+
+def delete_application(application_id:int,current_user:models.User,db:Session):
+    db_application = db.query(models.Application).filter(models.Application.id == application_id,models.Application.user_id == current_user.id).first()
+    if not db_application:
+       raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Application not found")
+    db.delete(db_application)
+    db.commit()
+    return {"details":"company deleted"}

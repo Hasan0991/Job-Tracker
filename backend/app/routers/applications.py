@@ -24,3 +24,11 @@ def get_all_applications(db:Session=Depends(get_db),
 @router.get("/me",response_model=list[schemas.ApplicationResponse])
 def get_application_by_user_id(current_user:models.User=Depends(get_current_user),db:Session=Depends(get_db)):
     return crud.get_application_by_user_id(current_user=current_user,db=db)
+
+@router.put("/{application_id}",response_model=schemas.ApplicationResponse)
+def update_my_application(application_id:int,application:schemas.ApplicationUpdate,current_user:models.User=Depends(get_current_user),db:Session=Depends(get_db)):
+    return crud.update_application(application_id=application_id,application=application,current_user=current_user,db=db)
+
+@router.delete("/{application_id}",status_code=status.HTTP_200_OK)
+def delete_application(application_id:int ,db:Session=Depends(get_db),current_user:models.User=Depends(get_current_user)):
+    return crud.delete_application(application_id=application_id,current_user=current_user,db=db)
