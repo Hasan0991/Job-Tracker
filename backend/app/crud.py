@@ -160,3 +160,6 @@ def create_application(db:Session,current_user:models.User,application:schemas.A
     db.commit()
     db.refresh(new_application)
     return new_application
+
+def get_all_applications(db:Session,skip,limit):
+    return db.query(models.Application).offset(skip).limit(limit).all()
