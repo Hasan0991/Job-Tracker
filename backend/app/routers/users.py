@@ -45,8 +45,8 @@ def get_user(user_id:int ,current_user: User = Depends(get_current_user),db:Sess
 
 
 @router.put("/{user_id}",response_model=schemas.UserResponse)
-def update_user(user_id:int,user: schemas.UserUpdate,db:Session=Depends(get_db)):
-    return crud.update_user(user_id,db,user_update=user)
+def update_user(user_id:int,user: schemas.UserUpdate,current_user:User=Depends(get_current_user),db:Session=Depends(get_db)):
+    return crud.update_user(user_id,db,user_update=user,current_user=current_user)
 
 @router.delete("/{user_id}",status_code=status.HTTP_200_OK)
 def delete_user(user_id: int,db:Session=Depends(get_db),current_user:User=Depends(get_current_user)):
