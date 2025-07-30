@@ -49,7 +49,7 @@ def delete_user(user_id: int ,db:Session,current_user:models.User):
     if not db_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="User not found")
     if current_user.id!=user_id and current_user.role!="admin":
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="Not authorized to view this user")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="Not authorized to delete this user")
     db.delete(db_user)
     db.commit()
     return {"details":"user deleted"}
