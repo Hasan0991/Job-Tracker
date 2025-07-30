@@ -79,21 +79,13 @@ def test_user_auth_wrong_email(client,admin_token_headers):
     assert response.status_code ==  422 
     assert response.json()["detail"][0]["msg"] =="value is not a valid email address: The part after the @-sign is not valid. It should have a period."
 
-def test_user_post_user(client):
-    login_data={
-        "username":"testuser1@example.com",
-        "password":"testpassword1"
-    }
-    login_response=client.post("/auth/login",data=login_data)
-    assert login_response.status_code==200
-    token = login_response.json()["access_token"]
-    headers = {"Authorization": f"Bearer {token}"}
+def test_user_post_user(client,user_token_headers):
     payload = {
         "email": "testuser3@example.com",
         "password": "testpass123", 
         "role": "user"
     }
-    response = client.post("/users/", json=payload, headers=headers)
+    response = client.post("/users/", json=payload, headers=user_token_headers)
     assert response.status_code ==  403
     assert response.json()["detail"]=="Not authorized to create this user"
 
