@@ -66,3 +66,14 @@ def admin_token_headers(client):
     assert response.status_code == 200
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
+
+@pytest.fixture(scope="function")
+def user_token_headers(client, db):
+    login_data = {
+        "username": "testuser1@example.com",
+        "password": "testpassword1"
+    }
+    response = client.post("/auth/login", data=login_data)
+    assert response.status_code == 200
+    token = response.json()["access_token"]
+    return {"Authorization": f"Bearer {token}"}
