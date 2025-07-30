@@ -14,7 +14,7 @@ router = APIRouter(
 @router.post("/", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db),current_user:User=Depends(get_current_user)):
     if current_user.role!="admin":
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="Not authorized to view this user")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="Not authorized to create this user")
     return crud.create_user(db=db, user=user)
 
 
