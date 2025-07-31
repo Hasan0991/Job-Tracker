@@ -4,19 +4,20 @@ from app import crud,models
 from app.database import get_db
 from app.dependencies.auth import get_current_user
 from app.schemas import schemas
-from app.models import User
+from app.models import User,Job
+
 router=APIRouter(
     prefix="/jobs",
     tags=["Jobs"]
 )
 @router.post("/",response_model=schemas.JobResponse,status_code=status.HTTP_201_CREATED)
 def create_job(job:schemas.JobCreate,current_user: User = Depends(get_current_user),db:Session=Depends(get_db)):
-    db_job= db.query(User).filter(User.id==current_user.id).first()
+    db_job= db.query(models.Job).filter(Job.title==job.title,Job.user_id==current_user.id).first()
     db_company=db.query(models.Company).filter(models.Company.id==job.company_id).first()
-    if not db_company:
+    if job.company_id is not None and not db_company:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="No such company")
-    if not db_job:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="No such user")
+    if  db_job:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="You can not create same post")
     return crud.create_job(db=db,job=job,current_user_id = current_user.id)
 
 @router.get("/{job_id}",response_model=schemas.JobResponse)
