@@ -27,7 +27,7 @@ def get_job_by_id(job_id:int ,db:Session=Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Job not found")
     return job
 
-@router.get("/",response_model=list[schemas.JobResponse],status_code=status.HTTP_201_CREATED)
+@router.get("/",response_model=list[schemas.JobResponse],status_code=status.HTTP_200_OK)
 def get_all_jobs(
     skip: int = Query(0, ge=0),
     limit: int = Query(10, le=100),
