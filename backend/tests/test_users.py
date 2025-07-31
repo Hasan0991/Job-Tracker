@@ -1,3 +1,7 @@
+from app.models import User  
+from app.database import get_db
+from jose import jwt
+from app.config import SECRET_KEY,ALGORITHM 
 def test_register_user(client):
     payload={
         "email":"testuser@example.com",
@@ -158,3 +162,30 @@ def test_user_can_delete_himself(client,user_token_headers):
     response = client.delete("/users/1", headers=user_token_headers)
     assert response.status_code == 200
     assert response.json()["details"] == "user deleted"
+
+def test_password_is_hashed(client,db):
+    payload={
+        "email":"sometiing@a.com",
+        "password":"hello123"
+    }
+    response=client.post("/auth/register",json=payload)
+    assert response.status_code==201
+    user=db.query(User).filter(User.email == payload["email"]).first()
+    db.close()
+
+    assert user is not None
+    assert user.password != payload["password"]
+
+
+def test_token_contains_correct_user_id(client,user_token_headers):
+    response=client.post("/auth/login",
+        data={
+            "username":"testuser1@example.com",
+            "password":"testpassword1"
+        })
+    assert response.status_code == 200
+
+    token = response.json()["access_token"]
+    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    assert "user_id" in payload
+    assert isinstance(payload["user_id"], int)
