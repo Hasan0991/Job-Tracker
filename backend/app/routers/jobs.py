@@ -12,6 +12,9 @@ router=APIRouter(
 @router.post("/",response_model=schemas.JobResponse,status_code=status.HTTP_201_CREATED)
 def create_job(job:schemas.JobCreate,current_user: User = Depends(get_current_user),db:Session=Depends(get_db)):
     db_job= db.query(User).filter(User.id==current_user.id).first()
+    db_company=db.query(models.Company).filter(models.Company.id==job.company_id).first()
+    if not db_company:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="No such company")
     if not db_job:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="No such user")
     return crud.create_job(db=db,job=job,current_user_id = current_user.id)
