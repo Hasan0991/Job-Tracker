@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from app.database import get_db,Base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
-from app.models import User,Job
+from app.models import User,Job,Company
 from app import utils
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 
@@ -46,6 +46,13 @@ def db():
         title="Backend Engineer",
         url="something.com"
     )
+    company=Company(
+        user_id=1,
+        name= "Stark Industries",
+        description= "software",
+        website= "stark.com"
+    )
+    db.add(company)
     db.add(same_job)
     db.add(additional_job)
     db.add(user)  
@@ -54,7 +61,8 @@ def db():
     db.refresh(admin_user)
     db.refresh(user)
     db.refresh(same_job)
-    db.add(additional_job)
+    db.refresh(company)
+    
     try:
         yield db
     finally:
