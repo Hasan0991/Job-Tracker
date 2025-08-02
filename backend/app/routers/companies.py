@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.models import User
 router=APIRouter(prefix="/companies",tags=["Companies"])
 
-@router.post("/",response_model=schemas.CompanyResponse)
+@router.post("/",response_model=schemas.CompanyResponse,status_code=status.HTTP_201_CREATED)
 def create_company(company:schemas.CompanyCreate,db:Session=Depends(get_db),current_user:User=Depends(get_current_user)):
     return crud.create_company(company=company,db=db,current_user_id=current_user.id)
 
