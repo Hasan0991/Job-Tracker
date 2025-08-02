@@ -62,6 +62,7 @@ def db():
     db.refresh(user)
     db.refresh(same_job)
     db.refresh(company)
+    db.refresh(additional_job)
     
     try:
         yield db
