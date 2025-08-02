@@ -8,7 +8,11 @@ def test_user_post_job(client,user_token_headers):
     assert response.json()["title"]=="Frontend Engineer"
 
 
-
+def test_create_job_without_title(client, user_token_headers):
+    payload = {"url": "example.com"}
+    response = client.post("/jobs/", json=payload, headers=user_token_headers)
+    assert response.status_code == 422  # FastAPI validation
+    assert response.json()["detail"][0]["msg"]=="Field required"
 def test_user_can_not_post_job(client,user_token_headers): #no company_id
     payload={
         "company_id":2,
