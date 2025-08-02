@@ -173,10 +173,11 @@ def get_application_by_user_id(current_user:models.User,db:Session):
     return db_user_applications
 
 def update_application(db:Session,application_id:int,application:schemas.ApplicationUpdate,current_user:models.User):
-    db_application = db.query(models.Application).filter(models.Application.id == application_id,models.Application.user_id == current_user.id).first()
+    db_application = db.query(models.Application).filter(models.Application.id == application_id).first()
     if not db_application:
        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Application not found")
-    
+    if db_application.user_id != current_user.id and current_user.role!="admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="Not authenticated to update this application")
     for key,value in application.dict(exclude_unset=True).items():
         setattr(db_application,key,value)
     db_application.updated_at=datetime.utcnow()
@@ -188,6 +189,8 @@ def delete_application(application_id:int,current_user:models.User,db:Session):
     db_application = db.query(models.Application).filter(models.Application.id == application_id,models.Application.user_id == current_user.id).first()
     if not db_application:
        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Application not found")
+    if db_application.user_id != current_user.id and current_user.role!="admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="Not authenticated to delete this application")
     db.delete(db_application)
     db.commit()
     return {"details":"company deleted"}
