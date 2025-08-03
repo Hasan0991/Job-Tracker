@@ -1,30 +1,25 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base, Session
+from sqlalchemy.orm import sessionmaker, declarative_base
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL is not set in .env file")
 
-# Инициализируем переменные, но не создаём engine по умолчанию
-engine = None
-SessionLocal = None
+engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-def init_db(test_engine=None):
-    global engine, SessionLocal
-    if test_engine:
-        engine = test_engine
-    else:
-        if not DATABASE_URL:
-            raise ValueError("DATABASE_URL is not set in .env file")
-        engine = create_engine(DATABASE_URL)
-    SessionLocal = sessionmaker(bind=engine, autoflush=False)
-
 def get_db():
-    db: Session = SessionLocal()
+    db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
+
+def init_db():
+    # Можно вызывать отдельно, но лучше это делать в FastAPI startup
+    Base.metadata.create_all(bind=engine)

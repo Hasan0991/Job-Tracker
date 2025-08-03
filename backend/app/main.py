@@ -2,6 +2,10 @@ from fastapi import FastAPI
 from app.routers import users,jobs,auth,protected,companies,applications
 from app import models
 from app.database import engine
+from app.database import init_db
+
+
+
 
 init_db()
 models.Base.metadata.create_all(bind=engine)
