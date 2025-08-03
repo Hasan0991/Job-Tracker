@@ -7,6 +7,7 @@ on:
   pull_request:
     paths:
       - "backend/**"
+  workflow_dispatch:  # позволяет запускать вручную через GitHub
 
 jobs:
   test:
@@ -22,7 +23,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.11
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
