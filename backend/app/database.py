@@ -23,3 +23,4 @@ def get_db():
 def init_db():
     # Можно вызывать отдельно, но лучше это делать в FastAPI startup
     Base.metadata.create_all(bind=engine)
+    

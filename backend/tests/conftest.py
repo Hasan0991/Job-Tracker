@@ -4,12 +4,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from app.main import app  
-from app.database import get_db, Base, init_db
+from app.main import app
+from app.database import get_db, Base
 from app.models import User, Job, Company, Application
 from app import utils
 
-# Use in-memory SQLite for testing
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 
 engine = create_engine(
@@ -18,9 +17,6 @@ engine = create_engine(
     poolclass=StaticPool
 )
 
-# 👇️ Инициализация базы (это КРИТИЧЕСКИ важно!)
-init_db(engine)
-
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 @pytest.fixture(scope="function")
@@ -28,8 +24,8 @@ def db():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     db = TestingSessionLocal()
-
-    # Test data
+    
+    # Создаем тестовые записи
     admin_user = User(
         email="admin@example.com",
         password=utils.hash_password("adminpass"),
@@ -41,8 +37,8 @@ def db():
         email="testuser1@example.com",
         password=utils.hash_password("testpassword1"),
         role="user",
-        first_name="Test",
-        last_name="User"
+        first_name="User",
+        last_name="Test"
     )
     same_job = Job(
         user_id=1,
@@ -69,6 +65,14 @@ def db():
     db.add_all([admin_user, user, same_job, additional_job, company, application])
     db.commit()
 
+    # Обновляем объекты из базы
+    db.refresh(admin_user)
+    db.refresh(user)
+    db.refresh(same_job)
+    db.refresh(additional_job)
+    db.refresh(company)
+    db.refresh(application)
+
     try:
         yield db
     finally:
@@ -77,9 +81,15 @@ def db():
 @pytest.fixture(scope="function")
 def client(db):
     def override_get_db():
-        yield db
+        try:
+            yield db
+        finally:
+            pass
+
     app.dependency_overrides[get_db] = override_get_db
-    return TestClient(app)
+    with TestClient(app) as c:
+        yield c
+    app.dependency_overrides.clear()
 
 @pytest.fixture
 def admin_token_headers(client):
@@ -93,7 +103,7 @@ def admin_token_headers(client):
     return {"Authorization": f"Bearer {token}"}
 
 @pytest.fixture(scope="function")
-def user_token_headers(client):
+def user_token_headers(client, db):
     login_data = {
         "username": "testuser1@example.com",
         "password": "testpassword1"
