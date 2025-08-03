@@ -92,7 +92,7 @@ class ApplicationUpdate(BaseModel):
 class ApplicationResponse(BaseModel):
     id: int
     user_id: int
-    job_id: int
+    job_title: str
     cover_letter: Optional[str]
     status: str
     created_at: datetime

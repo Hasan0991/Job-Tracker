@@ -59,6 +59,8 @@ class Application(Base):
     status = Column(String(50), default="pending")
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow,onupdate=datetime.utcnow)
-    
+    @property
+    def job_title(self):
+        return self.job.title if self.job else None
     user = relationship("User", back_populates="applications")
     job = relationship("Job", back_populates="applications")
