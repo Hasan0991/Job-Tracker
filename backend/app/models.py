@@ -37,7 +37,7 @@ class Job(Base):
     
     user = relationship("User", back_populates="jobs")
     company = relationship("Company", back_populates="jobs")
-    applications = relationship("Application", back_populates="job")
+    applications = relationship("Application", back_populates="job", cascade="all, delete")
 
 class Company(Base):
     __tablename__ = "companies"
