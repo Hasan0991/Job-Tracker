@@ -1,12 +1,15 @@
 import pytest
 from fastapi.testclient import TestClient
-from app.main import app  
 from sqlalchemy import create_engine
-from app.database import get_db,Base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
-from app.models import User,Job,Company,Application
+
+from app.main import app  
+from app.database import get_db, Base, init_db
+from app.models import User, Job, Company, Application
 from app import utils
+
+# Use in-memory SQLite for testing
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 
 engine = create_engine(
@@ -15,6 +18,9 @@ engine = create_engine(
     poolclass=StaticPool
 )
 
+# 👇️ Инициализация базы (это КРИТИЧЕСКИ важно!)
+init_db(engine)
+
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 @pytest.fixture(scope="function")
@@ -22,6 +28,8 @@ def db():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     db = TestingSessionLocal()
+
+    # Test data
     admin_user = User(
         email="admin@example.com",
         password=utils.hash_password("adminpass"),
@@ -33,43 +41,34 @@ def db():
         email="testuser1@example.com",
         password=utils.hash_password("testpassword1"),
         role="user",
-        first_name="Admin",
+        first_name="Test",
         last_name="User"
     )
-    same_job=Job(
+    same_job = Job(
         user_id=1,
         title="Backend Engineer",
         url="something.com"
     )
-    additional_job=Job(
+    additional_job = Job(
         user_id=2,
         title="Backend Engineer",
         url="something.com"
     )
-    company=Company(
+    company = Company(
         user_id=1,
-        name= "Stark Industries",
-        description= "software",
-        website= "stark.com"
+        name="Stark Industries",
+        description="software",
+        website="stark.com"
     )
-    application=Application(
+    application = Application(
         user_id=1,
-        job_id= 1,
-        cover_letter= "something for now"
+        job_id=1,
+        cover_letter="something for now"
     )
-    db.add(application)
-    db.add(company)
-    db.add(same_job)
-    db.add(additional_job)
-    db.add(user)  
-    db.add(admin_user)
+
+    db.add_all([admin_user, user, same_job, additional_job, company, application])
     db.commit()
-    db.refresh(admin_user)
-    db.refresh(user)
-    db.refresh(same_job)
-    db.refresh(company)
-    db.refresh(additional_job)
-    db.refresh(application)
+
     try:
         yield db
     finally:
@@ -82,11 +81,8 @@ def client(db):
     app.dependency_overrides[get_db] = override_get_db
     return TestClient(app)
 
-
-    
 @pytest.fixture
 def admin_token_headers(client):
-    
     login_data = {
         "username": "admin@example.com",
         "password": "adminpass"
@@ -97,7 +93,7 @@ def admin_token_headers(client):
     return {"Authorization": f"Bearer {token}"}
 
 @pytest.fixture(scope="function")
-def user_token_headers(client, db):
+def user_token_headers(client):
     login_data = {
         "username": "testuser1@example.com",
         "password": "testpassword1"
