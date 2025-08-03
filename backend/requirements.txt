@@ -4,3 +4,4 @@ sqlalchemy
 pytest
 pytest-cov
 httpx
+python-dotenv
