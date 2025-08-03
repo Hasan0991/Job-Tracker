@@ -1,14 +1,13 @@
 import pytest
 from fastapi.testclient import TestClient
+from app.main import app  
 from sqlalchemy import create_engine
+from app.database import get_db,Base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
-
-from app.main import app
-from app.database import get_db, Base
-from app.models import User, Job, Company, Application
+from app.models import User,Job,Company,Application
 from app import utils
-
+from app.database import init_db
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 
 engine = create_engine(
@@ -16,7 +15,7 @@ engine = create_engine(
     connect_args={"check_same_thread": False},
     poolclass=StaticPool
 )
-
+init_db()
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 @pytest.fixture(scope="function")
@@ -24,8 +23,6 @@ def db():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     db = TestingSessionLocal()
-    
-    # Создаем тестовые записи
     admin_user = User(
         email="admin@example.com",
         password=utils.hash_password("adminpass"),
@@ -37,42 +34,43 @@ def db():
         email="testuser1@example.com",
         password=utils.hash_password("testpassword1"),
         role="user",
-        first_name="User",
-        last_name="Test"
+        first_name="Admin",
+        last_name="User"
     )
-    same_job = Job(
+    same_job=Job(
         user_id=1,
         title="Backend Engineer",
         url="something.com"
     )
-    additional_job = Job(
+    additional_job=Job(
         user_id=2,
         title="Backend Engineer",
         url="something.com"
     )
-    company = Company(
+    company=Company(
         user_id=1,
-        name="Stark Industries",
-        description="software",
-        website="stark.com"
+        name= "Stark Industries",
+        description= "software",
+        website= "stark.com"
     )
-    application = Application(
+    application=Application(
         user_id=1,
-        job_id=1,
-        cover_letter="something for now"
+        job_id= 1,
+        cover_letter= "something for now"
     )
-
-    db.add_all([admin_user, user, same_job, additional_job, company, application])
+    db.add(application)
+    db.add(company)
+    db.add(same_job)
+    db.add(additional_job)
+    db.add(user)  
+    db.add(admin_user)
     db.commit()
-
-    # Обновляем объекты из базы
     db.refresh(admin_user)
     db.refresh(user)
     db.refresh(same_job)
-    db.refresh(additional_job)
     db.refresh(company)
+    db.refresh(additional_job)
     db.refresh(application)
-
     try:
         yield db
     finally:
@@ -91,8 +89,10 @@ def client(db):
         yield c
     app.dependency_overrides.clear()
 
+    
 @pytest.fixture
 def admin_token_headers(client):
+    
     login_data = {
         "username": "admin@example.com",
         "password": "adminpass"
