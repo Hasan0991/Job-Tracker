@@ -5,3 +5,4 @@ pytest
 pytest-cov
 httpx
 python-dotenv
+psycopg2-binary
