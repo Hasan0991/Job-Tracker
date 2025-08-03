@@ -15,12 +15,9 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    jobs = relationship("Job", back_populates="user",cascade="all, delete",
-    passive_deletes=True)
-    applications = relationship("Application", back_populates="user",cascade="all, delete",
-        passive_deletes=True)
-    companies = relationship("Company", back_populates="user",cascade="all, delete",
-    passive_deletes=True)
+    jobs = relationship("Job", back_populates="user",cascade="all, delete")
+    applications = relationship("Application", back_populates="user",cascade="all, delete")
+    companies = relationship("Company", back_populates="user",cascade="all, delete")
 class Job(Base):
     __tablename__ = "jobs"
     
