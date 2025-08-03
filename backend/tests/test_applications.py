@@ -75,3 +75,35 @@ def test_admin_can_update_application(client,admin_token_headers):
     response=client.put("/applications/1",json=updated_payload,headers=admin_token_headers)
     assert response.status_code==200
     assert response.json()["cover_letter"]=="the latest announce updated by admin"
+
+
+
+def test_admin_can_delete_application(client,admin_token_headers):
+    response = client.delete("/applications/1",headers=admin_token_headers)
+    assert response.status_code==200
+    assert response.json()["details"]=="application deleted"
+
+
+
+def test_user_can_not_delete_application(client,user_token_headers,admin_token_headers):
+    payload={  
+        "job_id": 2,
+        "cover_letter": "one more time"
+    }
+
+    response=client.post("/applications/",json=payload,headers=admin_token_headers)
+    assert response.status_code==201
+    assert response.json()["cover_letter"]=="one more time"
+    application_id=response.json()["id"]
+    print("App created:", response.json()) 
+    updated_payload={
+        "cover_letter":"the latest announce"
+    }
+    response=client.delete(f"/applications/{application_id}",headers=user_token_headers)
+    assert response.status_code==403
+    assert response.json()["detail"]=="Not authenticated to delete this application"
+
+def test_user_can_delete_application(client,user_token_headers):
+    response = client.delete("/applications/1",headers=user_token_headers)
+    assert response.status_code==200
+    assert response.json()["details"]=="application deleted"
