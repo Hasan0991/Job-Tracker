@@ -1,3 +1,4 @@
+# database.py
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
@@ -21,6 +22,4 @@ def get_db():
         db.close()
 
 def init_db():
-    # Можно вызывать отдельно, но лучше это делать в FastAPI startup
     Base.metadata.create_all(bind=engine)
-    
