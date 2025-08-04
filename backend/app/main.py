@@ -3,7 +3,19 @@ from app.routers import users, jobs, auth, protected, companies, applications
 from app import models
 from app.database import engine, Base,init_db 
 
-app = FastAPI()
+app = FastAPI(
+    title="Job Tracker API",
+    description="API for managing users, jobs, companies, and applications.",
+    version="1.0.0",
+    contact={
+        "name": "Your Name",
+        "email": "your.email@example.com",
+    },
+    license_info={
+        "name": "MIT License",
+    }
+)
+
 
 @app.on_event("startup")
 def on_startup():
