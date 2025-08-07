@@ -13,7 +13,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    # Сервис базы с хостом db
     services:
       db:
         image: postgres:15
@@ -24,12 +23,11 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready -U postgres
+          --health-cmd "pg_isready -U postgres"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
 
-    # Переменные окружения для вашего приложения и тестов
     env:
       DATABASE_URL: postgresql://postgres:hasan099@db:5432/job_tracker_db
       DB_HOST: db
@@ -42,26 +40,20 @@ jobs:
         working-directory: backend
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
       - name: Wait for Postgres
         run: |
           until pg_isready -h $DB_HOST -U postgres; do
             echo "Waiting for PostgreSQL at $DB_HOST..."
             sleep 2
           done
-
       - name: Run tests with coverage
         run: |
           pytest --cov=app --cov-report=term-missing
