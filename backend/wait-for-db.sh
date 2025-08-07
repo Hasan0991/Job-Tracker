@@ -1,11 +1,12 @@
 #!/bin/sh
 set -e
 
-host="$1"
+host="${DB_HOST:-localhost}"
+user="${DB_USER:-postgres}"
 shift
 cmd="$@"
 
-until pg_isready -h "$host" -U "postgres"; do
+until pg_isready -h "$host" -U "$user"; do
   echo "Waiting for database at $host..."
   sleep 2
 done
