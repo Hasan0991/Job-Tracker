@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 import React, { useState } from 'react';
+import API from "./api";
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
     email: '',
     password: '',
+    confirmPassword: '',
   });
 
   const handleChange = (e) => {
@@ -24,21 +26,18 @@ const RegisterForm = () => {
     }
 
     try {
-      const response = await fetch('https://ravishing-vibrancy-production.up.railway.app/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to register');
-      }
-
-      const data = await response.json();
+      const response = await API.post('/auth/register', formData);
       alert('Registration successful!');
+      setFormData({
+        firstname: '',
+        lastname: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+    });
 
     } catch (error) {
-      alert(error.message);
+      alert(error.response?.data?.message || error.message);
     }
   };
 
