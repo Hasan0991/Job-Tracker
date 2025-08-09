@@ -19,4 +19,4 @@ COPY --from=build /app/build /app/build
 EXPOSE 3000
 
 
-CMD ["sh", "-c", "serve -s build -l $PORT"]
+CMD ["serve", "-s", "build", "-l", "3000"]
