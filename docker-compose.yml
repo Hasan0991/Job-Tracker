@@ -10,6 +10,8 @@ services:
       - ./backend/.env
     depends_on:
       - db
+    networks:
+      - appnet
 
   db:
     image: postgres:15
@@ -23,6 +25,22 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - appnet
+
+  frontend:
+    build: ./frontend
+    container_name: job_tracker_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    driver: bridge
 
 volumes:
   postgres_data:
