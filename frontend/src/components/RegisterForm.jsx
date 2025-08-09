@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import API from "./api";
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
-    firstname: '',
-    lastname: '',
+    first_name: '',
+    last_name: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -28,9 +28,10 @@ const RegisterForm = () => {
     try {
       const response = await API.post('/auth/register', formData);
       alert('Registration successful!');
+      
       setFormData({
-        firstname: '',
-        lastname: '',
+        first_name: '',
+        last_name: '',
         email: '',
         password: '',
         confirmPassword: '',
@@ -50,10 +51,10 @@ const RegisterForm = () => {
           <label>
             <input
               required
-              name="firstname"
+              name="first_name"
               type="text"
               className="input"
-              value={formData.firstname}
+              value={formData.first_name}
               onChange={handleChange}
               placeholder=" "
             />
@@ -62,10 +63,10 @@ const RegisterForm = () => {
           <label>
             <input
               required
-              name="lastname"
+              name="last_name"
               type="text"
               className="input"
-              value={formData.lastname}
+              value={formData.last_name}
               onChange={handleChange}
               placeholder=" "
             />
