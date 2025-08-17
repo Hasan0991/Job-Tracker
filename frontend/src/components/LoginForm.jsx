@@ -18,10 +18,24 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const payload = {
+      grant_type: 'password',
+      username: formData.username,
+      password: formData.password,
+      scope: '',
+      client_id: '',
+      client_secret: '',
+    };
+
     try {
-      const response = await API.post('/auth/login', formData);
+      const response = await API.post('/auth/login', payload, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const token = response.data.access_token || response.data.token;
+      if (token) localStorage.setItem('token', token);
+
       alert('Login successful!');
-      // здесь можно сохранять токен или редиректить на другой маршрут
     } catch (error) {
       alert(error.response?.data?.message || error.message);
     }
