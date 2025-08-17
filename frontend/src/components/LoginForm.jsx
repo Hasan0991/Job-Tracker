@@ -29,7 +29,7 @@ const LoginForm = () => {
 
     try {
       const response = await API.post('/auth/login', payload, {
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       });
 
       const token = response.data.access_token || response.data.token;
