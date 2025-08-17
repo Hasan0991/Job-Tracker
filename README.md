@@ -20,25 +20,26 @@ The app supports **JWT authentication** for secure user login and can be exposed
 my-fullstack-app/
 ├─ backend/
 │  ├─ app/
-│  │  ├─ main.py         # FastAPI app entry point
-│  │  ├─ models.py       # Database models (SQLAlchemy)
-│  │  ├─ database.py     # Database connection & initialization
-│  │  ├─ routers/        # API endpoints organized by feature
-│  │  └─ utils.py        # Utility functions (password hashing, JWT)
-│  ├─ requirements.txt   # Python dependencies
-│  └─ Dockerfile         # Backend Docker configuration
+│  │  ├─ main.py          # FastAPI app entry point
+│  │  ├─ models.py        # Database models (SQLAlchemy)
+│  │  ├─ database.py      # Database connection & initialization
+│  │  ├─ routers/         # API endpoints organized by feature
+│  │  └─ utils.py         # Utility functions (password hashing, JWT)
+│  ├─ requirements.txt    # Python dependencies
+│  └─ Dockerfile          # Backend Docker configuration
 │
 ├─ frontend/
 │  ├─ src/
-│  │  ├─ components/     # React components
-│  │  ├─ pages/          # Page views
-│  │  ├─ api/            # API service for backend calls
-│  │  └─ App.js          # Main React component
+│  │  ├─ components/      # React components
+│  │  ├─ pages/           # Page views
+│  │  ├─ api/             # API service for backend calls
+│  │  └─ App.js           # Main React component
 │  ├─ package.json
-│  └─ Dockerfile         # Frontend Docker configuration
+│  └─ Dockerfile          # Frontend Docker configuration
 │
-├─ docker-compose.yml    # Defines services: frontend, backend, database
+├─ docker-compose.yml     # Defines services: frontend, backend, database
 └─ README.md
+
 
  
 ## Backend Setup (optional if using Docker)
