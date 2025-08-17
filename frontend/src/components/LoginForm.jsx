@@ -37,7 +37,7 @@ const LoginForm = () => {
           <input
             required
             name="username"
-            type="email"
+            type="text"
             className="input"
             value={formData.username}
             onChange={handleChange}
