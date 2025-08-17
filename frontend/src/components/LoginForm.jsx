@@ -4,7 +4,7 @@ import API from './api';
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: '',
   });
 
@@ -36,10 +36,10 @@ const LoginForm = () => {
         <label>
           <input
             required
-            name="email"
+            name="username"
             type="email"
             className="input"
-            value={formData.email}
+            value={formData.username}
             onChange={handleChange}
             placeholder=" "
           />
